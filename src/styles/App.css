@@ -33,11 +33,12 @@
   align-items:center;
 }
 
-.card-li {
+.card-li, .editable-item{
   list-style-type: none;
   width:100%;
   display: flex;
   color: black;
+  align-items:center;
 }
 
 .root-page {
@@ -46,15 +47,17 @@
 }
 
 /* Method to prevent more than one line found at https://stackoverflow.com/questions/1318108/css-limit-element-to-1-line*/
-.card-li *{
+.card-li *, .editable-item > div{
   padding: 0.5em;
   font-size: calc(9px + 1vmin);
-  margin: 0.5vh;
   overflow: hidden;
   white-space: nowrap;
-  text-overflow: ellipsis
+  text-overflow: ellipsis;
 }
 
+.completed_item{
+  margin:0.5em;
+}
 
 .card-li div{
   width: 100%;
@@ -70,16 +73,57 @@
   transition-timing-function: linear;
 }
 
-.builder_box{
+.builder_box, .edit_box{
   border: solid 0.5px #e3e3e3;
   border-radius: 10px;
 }
 
-.input_item{
-  float: left;
+.input_name{
+  width: calc(100% - 24px);
+  border:0px;
+  resize: none;
+  margin-top:10px;
+  font-size: 2.4vh;
+  padding:.5vh
+}
+
+.input_desc{
+  width: calc(100% - 24px);
+  border:0px;
+  resize: none;
+  margin-top:10px;
+  min-height: 10vh;
+}
+
+.edit_input{
   width: calc(100% - 24px);
   border:0px;
   margin:10px;
+  font-size: 1.5vh;
+  padding:.5vh
+}
+
+.name_edit{
+  width: calc(100% - 4px);
+  border: solid 0.5px #e3e3e3;
+  border-radius: 2px;
+  resize: none;
+  font-size: 2.4vh;
+  padding:.5vh
+}
+
+.description_edit{
+  width: calc(100% - 4px);
+  border: solid 0.5px #e3e3e3;
+  border-radius: 2px;
+  resize: none;
+  min-height: 10vh;
+  font-size: 1.5vh;
+  padding:.5vh
+}
+
+.edit_description{
+  min-height: 10vh;
 }
 
 .add_task_button{
@@ -92,15 +136,34 @@
   background-color: #CCFCE3;
 }
 
-.cancel_button{
+.default_button{
   border: solid 0.5px #a8a8a8;
   background-color: #e3e3e3;
 }
 
-.add_task_button, .create_button, .cancel_button{
+.add_task_button, .create_button, .default_button{
   border-radius: 5px;
   margin:0.2vh;
 }
-.create_button div, .cancel_button div, .add_task_button div{
+.create_button div, .default_button div, .add_task_button div{
   padding: 0.5vh 0.5vh;
+}
+
+.done_title{
+  flex-grow: 3;
+  text-align: center;
+  font-size: calc(9px + 3vmin);
+}
+
+.done_padding{
+  flex-basis:20%;
+}
+
+.done_padding *{
+  font-size: calc(7px + 1vmin);
+}
+
+.link, .link:focus, .link:hover, .link:visited, .link:link, .link:active {
+  text-decoration: none;
+  color:black
 }

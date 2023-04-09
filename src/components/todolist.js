@@ -1,12 +1,12 @@
 import {React} from 'react'
 import ToDoItem from './todoitem';
 
-export default function ToDoList({questions}) {
-
+export default function ToDoList({todoItems, onRemove}) {
+    
     return <ul className='card-list'>
-        {questions.map(question => (
+        {todoItems.map(item => (
             <li className='card-li'> 
-                <ToDoItem info={question}></ToDoItem>
+                <ToDoItem info={item} onRemove={onRemove}></ToDoItem>
             </li>
         ))}
     </ul>

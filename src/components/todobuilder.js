@@ -1,9 +1,9 @@
 import {React, useState} from 'react'
-
+import TextareaAutosize from 'react-textarea-autosize';
 const API_ENDPOINT = "https://homework2chrliu719-mlo5.api.codehooks.io/dev";
 const API_KEY = "5fc0982e-400c-49c0-86c2-baf213de4dd0";
 
-export default function ToDoBuilder({onAdd}) {
+export default function ToDoBuilder({onCreate}) {
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
     const [opened, setOpened] = useState(false);
@@ -21,6 +21,7 @@ export default function ToDoBuilder({onAdd}) {
             'body': JSON.stringify(data)
         })
         const resp = await response.json()
+        onCreate();
         console.log("Response is:");
         console.log(resp);
     }
@@ -52,18 +53,24 @@ export default function ToDoBuilder({onAdd}) {
         return (
             <div className='builder_box' style={{width:"100%", textAlign:"center"}}>
                 <div>
-                    <input name="frontInput" className='input_item' placeholder="Name" value={name} onChange={e => 
+                    <TextareaAutosize name="nameInput" className='input_name' placeholder="Name" value={name} onChange={e => 
                         {
                             setName(e.target.value);
-                            if(e.target.value != ""){
+
+                            // check to make sure there is a non-whitespace character
+                            // Regex from https://stackoverflow.com/questions/10261986/how-to-detect-string-which-contains-only-spaces
+                            if(/\S/.test(e.target.value)){
                                 setCanSubmit(true);
+                            }
+                            else{
+                                setCanSubmit(false);
                             }
                         }
                     }
-                    /><br></br>
-                    <input name="frontInput" className='input_item' placeholder="Description" value={description} onChange={e => setDescription(e.target.value)}/><br></br>
+                    />
+                    <TextareaAutosize name="descriptionInput" className='input_desc' placeholder="Description" value={description} onChange={e => setDescription(e.target.value)}/><br></br>
                 </div>
-                <button className='cancel_button' onClick={changeOpened}>
+                <button className='default_button' onClick={changeOpened}>
                     <div>
                         Cancel
                     </div>
