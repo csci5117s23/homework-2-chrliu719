@@ -21,8 +21,23 @@ app.get('/', (req, res) => {
   res.send('CRUD server ready')
 })
 
-app.get("/test", (req, res) => {
-  res.json({result: "you did it!"});
+app.get("/getItems", async (req, res) => {
+  // console.log(req);
+  // var completed = false;
+  // if(req.query["completed"]){
+  //   completed = req.query["completed"]
+  // }
+  // const response = await fetch(API_ENDPOINT + "/todoItem" + "?completed=" + completed, {
+  //   'method':'GET',
+  //   'headers': {'x-apikey': API_KEY}
+  // })
+  // const data = await response.json()
+  // // update state with data
+  // console.log(data)
+  // setItems(data);
+  // setLoaded(true);
+  // fetchData();  
+  // res.send('got request')
 });
 
 // Use Crudlify to create a REST API for any collection
