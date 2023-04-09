@@ -5,12 +5,14 @@
 */
 import {app} from 'codehooks-js'
 import {crudlify} from 'codehooks-crudlify'
-import { date, object, string } from 'yup';
+import { date, object, string, boolean } from 'yup';
 
-const flashCardYup = object({
-  front: string().required(),
-  back: string().required(),
-  category: string().required(),
+const todoItemYup = object({
+  name: string().required(),
+  description: string(),
+  category: string(),
+  user: string().required(),
+  completed: boolean().default(false),
   createdOn: date().default(() => new Date()),
 })
 
@@ -25,7 +27,7 @@ app.get("/test", (req, res) => {
 
 // Use Crudlify to create a REST API for any collection
 // crudlify(app)
-crudlify(app, {flashCard: flashCardYup})
+crudlify(app, {todoItem: todoItemYup})
 
 // bind to serverless runtime
 export default app.init();
