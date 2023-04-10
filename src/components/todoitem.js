@@ -1,28 +1,37 @@
 import Link from 'next/link';
 import {React, useState} from 'react'
-// require('purecss')
+import { useAuth } from '@clerk/nextjs';
+
 const API_ENDPOINT = "https://homework2chrliu719-mlo5.api.codehooks.io/dev";
-const API_KEY = "5fc0982e-400c-49c0-86c2-baf213de4dd0";
 
 export default function ToDoItem({info, onRemove}) {
     const [selected, setSelected] = useState(false);
+    const [disabled, setDisabled] = useState(false);
+    const { isLoaded, userId, sessionId, getToken} = useAuth();
 
     const removeItem = async () => {
-        var data = JSON.parse(JSON.stringify(info)); //copy data
-        data["completed"] = true
-        const response = await fetch(API_ENDPOINT + "/todoItem/" + info["_id"], {
-            'method':'PATCH',
-            'headers': {
-                'x-apikey': API_KEY,
-                "Content-Type": "application/json"
-            },
-            'body': JSON.stringify(data)
-        })
-        onRemove(); 
+        if(userId){
+            const token = await getToken({ template: "codehooks" });
+            var data = JSON.parse(JSON.stringify(info)); //copy data
+            data["completed"] = true
+            const response = await fetch(API_ENDPOINT + "/todoItem/" + info["_id"] + "?user=" + userId, {
+                'method':'PATCH',
+                'headers': {
+                    'Authorization': 'Bearer ' + token,
+                    "Content-Type": "application/json"
+                },
+                'body': JSON.stringify(data)
+            })
+            onRemove(info["_id"]); 
+        }
     }
 
     function handleRemove(e){
+        if(disabled){
+            return;
+        }
         setSelected(true);
+        setDisabled(true);
         setTimeout(() => setSelected(false), 200);
         setTimeout(() => {
             e.target.checked = false;

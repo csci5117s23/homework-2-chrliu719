@@ -126,6 +126,8 @@
   min-height: 10vh;
 }
 
+button:not([disabled])
+
 .add_task_button{
   border: solid 0.5px #598BFF;
   background-color: #D9E4FF;
@@ -139,6 +141,7 @@
 .default_button{
   border: solid 0.5px #a8a8a8;
   background-color: #e3e3e3;
+  color:black;
 }
 
 .add_task_button, .create_button, .default_button{

@@ -1,71 +1,86 @@
 import {React, useEffect, useState} from 'react'
-const API_ENDPOINT = "https://homework2chrliu719-mlo5.api.codehooks.io/dev";
-const API_KEY = "5fc0982e-400c-49c0-86c2-baf213de4dd0";
 import { useRouter } from 'next/router'
 import TextareaAutosize from 'react-textarea-autosize';
+import { useAuth } from '@clerk/nextjs';
 
-export default function EditableToDoItem({id}) {
-    const [info, setInfo] = useState({});
+const API_ENDPOINT = "https://homework2chrliu719-mlo5.api.codehooks.io/dev";
+
+export default function EditableToDoItem({info}) {
+    const [data, setData] = useState({});
     const [name, setName] = useState("");
     const [description, setDescription] = useState("")
     const [selected, setSelected] = useState(false);
     const [dataLoaded, setLoaded] = useState(false);
     const [canSave, setCanSave] = useState(false);
+    const { isLoaded, userId, sessionId, getToken} = useAuth();
     const router = useRouter();
 
     useEffect(() => {
+      router.events.on('routeChangeStart', changeCompletion);
+      window.addEventListener("beforeunload", changeCompletion);
+  
       const fetchData = async () => {
-        console.log(router.query)
-        //TODO, query only the user's items, should just need to add ?user=<username>
-        const response = await fetch(API_ENDPOINT + "/todoItem/" + router.query["id"], {
-          'method':'GET',
-          'headers': {'x-apikey': API_KEY}
-        })
-        const data = await response.json()
-
-        // update state with data
-        console.log(data)
-        setInfo(data);
-        setName(data["name"]);
-        setDescription(data["description"]);
-        setSelected(data["completed"]);
-        setLoaded(true);
+        if(userId){
+          const token = await getToken({ template: "codehooks" });
+          const response = await fetch(API_ENDPOINT + "/todoItem/" + router.query["id"] + "?user=" + userId, {
+            'method':'GET',
+            'headers': {'Authorization': 'Bearer ' + token}
+          })
+          const data = await response.json()
+  
+          // update state with data
+          setData(data);
+          setName(data["name"]);
+          setDescription(data["description"]);
+          setSelected(data["completed"]);
+          setLoaded(true);
+        } 
       }
-
+  
       if(router.isReady){
         fetchData();
       }
+  
+      return () => {
+        router.events.off('routeChangeStart', changeCompletion);
+        window.removeEventListener("beforeunload", changeCompletion);
+      }
     }, [router.isReady]);
-
+  
     const changeCompletion = async () => {
+      if(userId){
+        const token = await getToken({ template: "codehooks" });
         var data = JSON.parse(JSON.stringify(info)); //copy data
         data["completed"] = !selected;
-        const response = await fetch(API_ENDPOINT + "/todoItem/" + info["_id"], {
+        const response = await fetch(API_ENDPOINT + "/todoItem/" + info["_id"] + "?user=" + userId, {
             'method':'PATCH',
             'headers': {
-                'x-apikey': API_KEY,
+                'Authorization': 'Bearer ' + token,
                 "Content-Type": "application/json"
             },
             'body': JSON.stringify(data)
         })
+      }
     }
 
     const saveTaskText = async () => {
-      var data = JSON.parse(JSON.stringify(info)); //copy data
-      data["name"] = name;
-      data["description"] = description;
-      const response = await fetch(API_ENDPOINT + "/todoItem/" + info["_id"], {
-          'method':'PATCH',
-          'headers': {
-              'x-apikey': API_KEY,
-              "Content-Type": "application/json"
-          },
-          'body': JSON.stringify(data)
-      })
-
-      console.log(response);
-      setCanSave(false);
-  }
+      if(userId){
+        const token = await getToken({ template: "codehooks" }); 
+        var data = JSON.parse(JSON.stringify(info)); //copy data
+        data["name"] = name;
+        data["description"] = description;
+        const response = await fetch(API_ENDPOINT + "/todoItem/" + info["_id"] + "?user=" + userId, {
+            'method':'PATCH',
+            'headers': {
+                'Authorization': 'Bearer ' + token,
+                "Content-Type": "application/json"
+            },
+            'body': JSON.stringify(data)
+        })
+        console.log("saved");
+        setCanSave(false);
+      }
+    }
 
     function handleCheck(e){
       changeCompletion();
@@ -77,7 +92,7 @@ export default function EditableToDoItem({id}) {
             {/* Methods used to create color transition on button click found at https://blog.openreplay.com/mastering-css-transitions-with-react-18/ */}
             <div className='item-check' onClick={handleCheck} style={{
                 height:"0.3vh", width:"0.3vh", borderRadius:"50%", border:"0.1em double red", aspectRatio:"1/1", 
-                background:((!selected && "white") || (selected && "#f06565"))
+                background:((!selected && "white") || (selected && "#f06565")), marginRight:"0.7vh"
             }}></div>
         </>
     );

@@ -14,30 +14,27 @@ const todoItemYup = object({
   user: string().required(),
   completed: boolean().default(false),
   createdOn: date().default(() => new Date()),
-})
+});
+
+// Taken from Kluver's exmaple repo
+const userAuth = async (req, res, next) => {
+  try {
+    const { authorization } = req.headers;
+    if (authorization) {
+      const token = authorization.replace('Bearer ','');
+      const token_parsed = jwtDecode(token);
+      req.user_token = token_parsed;
+    }
+    next();
+  } catch (error) {
+    next(error);
+  } 
+}
+app.use(userAuth)
 
 // test route for https://<PROJECTID>.api.codehooks.io/dev/
 app.get('/', (req, res) => {
-  res.send('CRUD server ready')
-})
-
-app.get("/getItems", async (req, res) => {
-  // console.log(req);
-  // var completed = false;
-  // if(req.query["completed"]){
-  //   completed = req.query["completed"]
-  // }
-  // const response = await fetch(API_ENDPOINT + "/todoItem" + "?completed=" + completed, {
-  //   'method':'GET',
-  //   'headers': {'x-apikey': API_KEY}
-  // })
-  // const data = await response.json()
-  // // update state with data
-  // console.log(data)
-  // setItems(data);
-  // setLoaded(true);
-  // fetchData();  
-  // res.send('got request')
+  res.send('CRUD server ready');
 });
 
 // Use Crudlify to create a REST API for any collection

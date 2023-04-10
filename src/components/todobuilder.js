@@ -1,29 +1,32 @@
 import {React, useState} from 'react'
 import TextareaAutosize from 'react-textarea-autosize';
+import { useAuth } from '@clerk/nextjs';
+
 const API_ENDPOINT = "https://homework2chrliu719-mlo5.api.codehooks.io/dev";
-const API_KEY = "5fc0982e-400c-49c0-86c2-baf213de4dd0";
 
 export default function ToDoBuilder({onCreate}) {
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
     const [opened, setOpened] = useState(false);
     const [canSubmit, setCanSubmit] = useState(false);
+    const { isLoaded, userId, sessionId, getToken} = useAuth();
+
 
     const submitNewItem = async () => {
-        //TODO: CHANGE USER TO RIGHT USER
-        const data = {"name": name, "description": description, "user": "dev"};
-        const response = await fetch(API_ENDPOINT + "/todoItem", {
-            'method':'POST',
-            'headers': {
-                'x-apikey': API_KEY,
-                "Content-Type": "application/json"
-            },
-            'body': JSON.stringify(data)
-        })
-        const resp = await response.json()
-        onCreate();
-        console.log("Response is:");
-        console.log(resp);
+        if(userId){
+            const token = await getToken({ template: "codehooks" });
+            const data = {"name": name, "description": description, "user": userId};
+            const response = await fetch(API_ENDPOINT + "/todoItem", {
+                'method':'POST',
+                'headers': {
+                    'Authorization': 'Bearer ' + token,
+                    "Content-Type": "application/json"
+                },
+                'body': JSON.stringify(data)
+            })
+            const resp = await response.json()
+            onCreate(resp);
+        }
     }
     
 
