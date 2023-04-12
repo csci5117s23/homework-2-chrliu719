@@ -14,7 +14,7 @@ export default function Done() {
       if(userId){
         const token = await getToken({ template: "codehooks" });
         //TODO, query only the user's items, should just need to add ?user=<username>
-        const response = await fetch(API_ENDPOINT + "/todoItem" + "?completed=true" + "&user=" + userId, {
+        const response = await fetch(API_ENDPOINT + "/todoItem" + "?completed=true", {
           'method':'GET',
           'headers': {'Authorization': 'Bearer ' + token}
         })

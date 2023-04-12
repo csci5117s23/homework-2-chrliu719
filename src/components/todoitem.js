@@ -14,7 +14,7 @@ export default function ToDoItem({info, onRemove}) {
             const token = await getToken({ template: "codehooks" });
             var data = JSON.parse(JSON.stringify(info)); //copy data
             data["completed"] = true
-            const response = await fetch(API_ENDPOINT + "/todoItem/" + info["_id"] + "?user=" + userId, {
+            const response = await fetch(API_ENDPOINT + "/todoItem/" + info["_id"], {
                 'method':'PATCH',
                 'headers': {
                     'Authorization': 'Bearer ' + token,

@@ -5,24 +5,20 @@ import ToDoList from '../components/todolist';
 import Header from '@/components/header';
 import { useAuth } from '@clerk/nextjs';
 import { useRouter } from 'next/router'
-import jwtDecode from "jwt-decode";
-import jwtEncode from "jwt-encode";
 const inter = Inter({ subsets: ['latin'] });
 const API_ENDPOINT = "https://homework2chrliu719-mlo5.api.codehooks.io/dev";
 
 export default function Home() {
   const [items, setItems] = useState([])
-  const [listChanged, setListChanged] = useState(false); // toggled between to cause rerendering
   const [dataLoaded, setLoaded] = useState(false);
-  const { isLoaded, userId, sessionId, getToken} = useAuth();
-  const router = useRouter()
+  const { isLoaded, userId, sessionId, getToken } = useAuth();
 
   useEffect(() => {
     const fetchData = async () => {
       //TODO, query only the user's items, should just need to add ?user=<username>
       if (isLoaded && userId) { 
         const token = await getToken({ template: "codehooks" });
-        const response = await fetch(API_ENDPOINT + "/todoItem" + "?completed=false" + "&user=" + userId, {
+        const response = await fetch(API_ENDPOINT + "/todoItem" + "?completed=false", {
           'method':'GET',
           'headers': {'Authorization': 'Bearer ' + token}
         })
@@ -46,12 +42,10 @@ export default function Home() {
   }, []);
 
   function addItem(newItem){
-    console.log("Added");
     setItems([newItem].concat(items));
   }
 
   function removeItem(id){
-    console.log("Removed");
     setItems(items.filter(item => item["_id"] != id));
   }
 

@@ -15,7 +15,7 @@ export default function ToDoBuilder({onCreate}) {
     const submitNewItem = async () => {
         if(userId){
             const token = await getToken({ template: "codehooks" });
-            const data = {"name": name, "description": description, "user": userId};
+            const data = {"name": name, "description": description};
             const response = await fetch(API_ENDPOINT + "/todoItem", {
                 'method':'POST',
                 'headers': {

@@ -5,7 +5,7 @@ import { useAuth } from '@clerk/nextjs';
 
 const API_ENDPOINT = "https://homework2chrliu719-mlo5.api.codehooks.io/dev";
 
-export default function EditableToDoItem({info}) {
+export default function EditableToDoItem({}) {
     const [data, setData] = useState({});
     const [name, setName] = useState("");
     const [description, setDescription] = useState("")
@@ -22,7 +22,7 @@ export default function EditableToDoItem({info}) {
       const fetchData = async () => {
         if(userId){
           const token = await getToken({ template: "codehooks" });
-          const response = await fetch(API_ENDPOINT + "/todoItem/" + router.query["id"] + "?user=" + userId, {
+          const response = await fetch(API_ENDPOINT + "/todoItem/" + router.query["id"], {
             'method':'GET',
             'headers': {'Authorization': 'Bearer ' + token}
           })
@@ -50,15 +50,14 @@ export default function EditableToDoItem({info}) {
     const changeCompletion = async () => {
       if(userId){
         const token = await getToken({ template: "codehooks" });
-        var data = JSON.parse(JSON.stringify(info)); //copy data
-        data["completed"] = !selected;
-        const response = await fetch(API_ENDPOINT + "/todoItem/" + info["_id"] + "?user=" + userId, {
+        var req_data = {"completed": !selected, "name": name, "description": description}
+        const response = await fetch(API_ENDPOINT + "/todoItem/" + data["_id"], {
             'method':'PATCH',
             'headers': {
                 'Authorization': 'Bearer ' + token,
                 "Content-Type": "application/json"
             },
-            'body': JSON.stringify(data)
+            'body': JSON.stringify(req_data)
         })
       }
     }
@@ -66,18 +65,17 @@ export default function EditableToDoItem({info}) {
     const saveTaskText = async () => {
       if(userId){
         const token = await getToken({ template: "codehooks" }); 
-        var data = JSON.parse(JSON.stringify(info)); //copy data
-        data["name"] = name;
-        data["description"] = description;
-        const response = await fetch(API_ENDPOINT + "/todoItem/" + info["_id"] + "?user=" + userId, {
+        var req_data = JSON.parse(JSON.stringify(data)); //copy data
+        req_data["name"] = name;
+        req_data["description"] = description;
+        const response = await fetch(API_ENDPOINT + "/todoItem/" + data["_id"], {
             'method':'PATCH',
             'headers': {
                 'Authorization': 'Bearer ' + token,
                 "Content-Type": "application/json"
             },
-            'body': JSON.stringify(data)
+            'body': JSON.stringify(req_data)
         })
-        console.log("saved");
         setCanSave(false);
       }
     }
