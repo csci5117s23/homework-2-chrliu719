@@ -20,7 +20,7 @@ export default function Home() {
         <br></br>
         <SignInButton redirectUrl="/todos" mode="modal">
           <button className='default_button'>
-            <div style={{fontSize:"3vh"}}>Sign In</div>
+            <div style={{fontSize:"3vh"}}>Sign Up/In</div>
           </button>
         </SignInButton>
       </div>  
