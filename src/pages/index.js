@@ -18,7 +18,7 @@ export default function Home() {
       <div className="App, root-page">
         Much Todo About Nothing
         <br></br>
-        <SignUpButton mode="modal" className='default_button' redirectUrl="/todos">
+        <SignUpButton mode="modal" redirectUrl="/todos">
           <button className='default_button'>
             <div style={{fontSize:"3vh"}}>Sign Up</div>
           </button>
