@@ -16,9 +16,6 @@ export default function EditableToDoItem({}) {
     const router = useRouter();
 
     useEffect(() => {
-      router.events.on('routeChangeStart', changeCompletion);
-      window.addEventListener("beforeunload", changeCompletion);
-  
       const fetchData = async () => {
         if(userId){
           const token = await getToken({ template: "codehooks" });
@@ -39,11 +36,6 @@ export default function EditableToDoItem({}) {
   
       if(router.isReady){
         fetchData();
-      }
-  
-      return () => {
-        router.events.off('routeChangeStart', changeCompletion);
-        window.removeEventListener("beforeunload", changeCompletion);
       }
     }, [router.isReady]);
   
